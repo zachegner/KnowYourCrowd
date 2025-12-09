@@ -5,15 +5,17 @@ const { v4: uuidv4 } = require('uuid');
  * Handles all game phases, player interactions, and state transitions
  */
 class GameLogic {
-  constructor(io, roomManager, claudeService, scoreCalculator, config) {
+  constructor(io, roomManager, claudeService, scoreCalculator, config, db = null) {
     this.io = io;
     this.roomManager = roomManager;
     this.claudeService = claudeService;
     this.scoreCalculator = scoreCalculator;
     this.config = config;
+    this.db = db;
     
     // Game state
     this.gameState = this.createInitialState();
+    this.currentRoundId = null; // Track current round ID in database
     this.timers = {};
     this.displaySocket = null;
     this.hostPhoneSocket = null;
@@ -168,6 +170,9 @@ class GameLogic {
     socket.join(this.gameState.roomCode);
     socket.playerId = player.id;
     
+    // Save player to database
+    this.savePlayerToDb(player);
+    
     // Send confirmation to player
     socket.emit('room_joined', {
       player,
@@ -212,6 +217,13 @@ class GameLogic {
     this.gameState.currentRound = 1;
     this.gameState.hostRotationCount = 0;
     
+    // Update game in database
+    this.updateGameInDb({
+      status: 'in_progress',
+      total_rounds: this.gameState.totalRounds,
+      current_round: 1
+    });
+    
     // Notify all
     this.io.to(this.gameState.roomCode).emit('game_started', {
       totalRounds: this.gameState.totalRounds,
@@ -244,6 +256,13 @@ class GameLogic {
     this.gameState.currentRound = 1;
     this.gameState.hostRotationCount = 0;
     
+    // Update game in database
+    this.updateGameInDb({
+      status: 'in_progress',
+      total_rounds: this.gameState.totalRounds,
+      current_round: 1
+    });
+    
     // Notify all
     this.io.to(this.gameState.roomCode).emit('game_started', {
       totalRounds: this.gameState.totalRounds,
@@ -265,6 +284,15 @@ class GameLogic {
     // Update current host
     const host = this.getCurrentHost();
     this.gameState.currentHost = host;
+    
+    // Create round in database
+    this.createRoundInDb(this.gameState.currentRound, host.id);
+    
+    // Update game current_round and current_host_id
+    this.updateGameInDb({
+      current_round: this.gameState.currentRound,
+      current_host_id: host.id
+    });
     
     // Mark host status
     this.gameState.players.forEach(p => {
@@ -336,6 +364,9 @@ class GameLogic {
     this.clearTimer('themeSelection');
     this.gameState.selectedTheme = theme;
     
+    // Update round in database
+    this.updateRoundInDb({ theme });
+    
     // Notify all
     this.io.to(this.gameState.roomCode).emit('theme_selected', {
       theme,
@@ -350,6 +381,9 @@ class GameLogic {
   startAnsweringPhase() {
     this.gameState.phase = 'answering';
     this.gameState.answers = [];
+    
+    // Update round phase in database
+    this.updateRoundInDb({ phase: 'answering' });
     
     const host = this.getCurrentHost();
     
@@ -472,6 +506,10 @@ class GameLogic {
       }
     });
     
+    // Save all answers and penalty scores to database
+    this.saveAnswersToDb();
+    this.saveScoresToDb();
+    
     // Start matching phase
     this.startMatchingPhase();
   }
@@ -479,6 +517,9 @@ class GameLogic {
   // Start matching phase
   startMatchingPhase() {
     this.gameState.phase = 'matching';
+    
+    // Update round phase in database
+    this.updateRoundInDb({ phase: 'matching' });
     
     const host = this.getCurrentHost();
     
@@ -585,6 +626,9 @@ class GameLogic {
     this.clearTimer('matching');
     this.gameState.matches = data.matches;
     
+    // Save matches to database
+    this.saveMatchesToDb();
+    
     // Start reveal phase
     this.startRevealPhase();
   }
@@ -599,6 +643,9 @@ class GameLogic {
       answerIndex: index % shuffledAnswers.length
     }));
     
+    // Save auto-generated matches to database
+    this.saveMatchesToDb();
+    
     this.startRevealPhase();
   }
 
@@ -606,6 +653,9 @@ class GameLogic {
   startRevealPhase() {
     this.gameState.phase = 'reveal';
     this.gameState.revealIndex = 0;
+    
+    // Update round phase in database
+    this.updateRoundInDb({ phase: 'reveal' });
     
     // Calculate results using matchingAnswers (shuffled) so index lookup is correct
     // The host matched against shuffled indices, so we need to use the shuffled array
@@ -623,6 +673,9 @@ class GameLogic {
     
     const host = this.getCurrentHost();
     host.score += hostScoreResult.score;
+    
+    // Save updated scores to database
+    this.saveScoresToDb();
     
     // Emit matches summary for display before revealing
     this.io.to(this.gameState.roomCode).emit('matches_submitted', {
@@ -797,6 +850,10 @@ class GameLogic {
     // We have a winner (either outright or after sudden death)
     this.gameState.phase = 'game_over';
     const winner = scoreboard[0];
+    
+    // Complete game in database and save to history
+    this.updateGameInDb({ status: 'completed' });
+    this.saveGameHistoryToDb(winner);
     
     // Emit game over
     this.io.to(this.gameState.roomCode).emit('game_over', {
@@ -983,6 +1040,159 @@ class GameLogic {
       socket.emit('reconnect_failed', { message: 'Session expired' });
     }
   }
+
+  // ==================== DATABASE PERSISTENCE METHODS ====================
+
+  /**
+   * Save player to database
+   */
+  savePlayerToDb(player) {
+    if (!this.db) return;
+    
+    const gameId = this.roomManager.getCurrentGameId();
+    if (!gameId) return;
+    
+    try {
+      this.db.addPlayer(gameId, player);
+    } catch (error) {
+      console.error('Failed to save player to database:', error);
+    }
+  }
+
+  /**
+   * Update player in database
+   */
+  updatePlayerInDb(playerId, updates) {
+    if (!this.db) return;
+    
+    try {
+      this.db.updatePlayer(playerId, updates);
+    } catch (error) {
+      console.error('Failed to update player in database:', error);
+    }
+  }
+
+  /**
+   * Update game status in database
+   */
+  updateGameInDb(updates) {
+    if (!this.db) return;
+    
+    const gameId = this.roomManager.getCurrentGameId();
+    if (!gameId) return;
+    
+    try {
+      this.db.updateGame(gameId, updates);
+    } catch (error) {
+      console.error('Failed to update game in database:', error);
+    }
+  }
+
+  /**
+   * Create a new round in database
+   */
+  createRoundInDb(roundNumber, hostId, theme = null) {
+    if (!this.db) return null;
+    
+    const gameId = this.roomManager.getCurrentGameId();
+    if (!gameId) return null;
+    
+    try {
+      this.currentRoundId = this.db.createRound(gameId, roundNumber, hostId, theme);
+      return this.currentRoundId;
+    } catch (error) {
+      console.error('Failed to create round in database:', error);
+      return null;
+    }
+  }
+
+  /**
+   * Update round in database
+   */
+  updateRoundInDb(updates) {
+    if (!this.db || !this.currentRoundId) return;
+    
+    try {
+      this.db.updateRound(this.currentRoundId, updates);
+    } catch (error) {
+      console.error('Failed to update round in database:', error);
+    }
+  }
+
+  /**
+   * Save all answers for current round
+   */
+  saveAnswersToDb() {
+    if (!this.db || !this.currentRoundId) return;
+    
+    try {
+      this.db.saveAnswers(this.currentRoundId, this.gameState.answers);
+    } catch (error) {
+      console.error('Failed to save answers to database:', error);
+    }
+  }
+
+  /**
+   * Save all matches for current round
+   */
+  saveMatchesToDb() {
+    if (!this.db || !this.currentRoundId) return;
+    
+    try {
+      this.db.saveMatches(this.currentRoundId, this.gameState.matches);
+    } catch (error) {
+      console.error('Failed to save matches to database:', error);
+    }
+  }
+
+  /**
+   * Save player scores to database
+   */
+  saveScoresToDb() {
+    if (!this.db) return;
+    
+    try {
+      this.db.updatePlayerScores(this.gameState.players);
+    } catch (error) {
+      console.error('Failed to save scores to database:', error);
+    }
+  }
+
+  /**
+   * Complete current round in database
+   */
+  completeRoundInDb() {
+    if (!this.db || !this.currentRoundId) return;
+    
+    try {
+      this.db.completeRound(this.currentRoundId);
+    } catch (error) {
+      console.error('Failed to complete round in database:', error);
+    }
+  }
+
+  /**
+   * Save game to history
+   */
+  saveGameHistoryToDb(winner) {
+    if (!this.db) return;
+    
+    const gameId = this.roomManager.getCurrentGameId();
+    if (!gameId) return;
+    
+    try {
+      this.db.saveGameHistory(
+        gameId,
+        winner,
+        this.gameState.players.length,
+        this.gameState.currentRound
+      );
+    } catch (error) {
+      console.error('Failed to save game history:', error);
+    }
+  }
+
+  // ==================== END DATABASE METHODS ====================
 
   // Helper: Get socket for player
   getPlayerSocket(playerId) {

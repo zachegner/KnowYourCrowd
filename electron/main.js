@@ -1,10 +1,12 @@
 const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
 const { startServer, stopServer, getServerInfo } = require('./server');
+const DatabaseService = require('../services/database');
 const fs = require('fs');
 
 let mainWindow;
 let serverInfo = null;
+let db = null;
 
 // Config file path
 const configPath = path.join(__dirname, '..', 'config', 'default-config.json');
@@ -43,6 +45,24 @@ function createWindow() {
 }
 
 async function initializeApp() {
+  // Initialize database
+  const dbPath = path.join(app.getPath('userData'), 'know-your-crowd.db');
+  db = new DatabaseService(dbPath);
+  
+  try {
+    db.initialize();
+    console.log('Database initialized successfully');
+    
+    // Clean up old games (7+ days)
+    const cleaned = db.cleanupOldGames(7);
+    if (cleaned > 0) {
+      console.log(`Cleaned up ${cleaned} old game(s)`);
+    }
+  } catch (err) {
+    console.error('Database initialization failed:', err);
+    dialog.showErrorBox('Database Error', 'Failed to initialize the database. The app may not function correctly.');
+  }
+
   // Load config and check for API key
   let config;
   try {
@@ -56,9 +76,9 @@ async function initializeApp() {
     config = { apiKey: process.env.ANTHROPIC_API_KEY || '' };
   }
 
-  // Start the server
+  // Start the server (pass database instance)
   try {
-    serverInfo = await startServer(config);
+    serverInfo = await startServer(config, db);
     console.log(`Server started at http://${serverInfo.localIP}:${serverInfo.port}`);
   } catch (err) {
     console.error('Failed to start server:', err);
@@ -92,6 +112,9 @@ app.whenReady().then(initializeApp);
 
 app.on('window-all-closed', () => {
   stopServer();
+  if (db) {
+    db.close();
+  }
   if (process.platform !== 'darwin') {
     app.quit();
   }
@@ -105,6 +128,9 @@ app.on('activate', () => {
 
 app.on('before-quit', () => {
   stopServer();
+  if (db) {
+    db.close();
+  }
 });
 
 // IPC handlers

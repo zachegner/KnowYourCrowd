@@ -13,7 +13,7 @@ const ScoreCalculator = require('../services/score-calculator');
 
 let app, server, io;
 let config = {};
-let gameLogic, roomManager, claudeService, scoreCalculator;
+let gameLogic, roomManager, claudeService, scoreCalculator, db;
 
 // Get local IP address
 function getLocalIP() {
@@ -42,8 +42,9 @@ function findAvailablePort(startPort = 3000) {
   });
 }
 
-async function startServer(appConfig) {
+async function startServer(appConfig, database) {
   config = appConfig;
+  db = database;
   
   app = express();
   server = http.createServer(app);
@@ -55,10 +56,10 @@ async function startServer(appConfig) {
   });
 
   // Initialize services
-  roomManager = new RoomManager();
+  roomManager = new RoomManager(db);
   scoreCalculator = new ScoreCalculator(config);
   claudeService = new ClaudeService(config);
-  gameLogic = new GameLogic(io, roomManager, claudeService, scoreCalculator, config);
+  gameLogic = new GameLogic(io, roomManager, claudeService, scoreCalculator, config, db);
 
   // Serve static files
   app.use('/styles', express.static(path.join(__dirname, '..', 'src', 'styles')));
@@ -196,13 +197,14 @@ async function startServer(appConfig) {
   return new Promise((resolve, reject) => {
     server.listen(port, () => {
       const localIP = getLocalIP();
-      const roomCode = roomManager.createRoom();
+      const { roomCode, gameId } = roomManager.createRoom();
       
       const serverInfo = {
         port,
         localIP,
         url: `http://${localIP}:${port}`,
         roomCode,
+        gameId,
         updateApiKey: (newKey) => {
           config.apiKey = newKey;
           claudeService.updateApiKey(newKey);
