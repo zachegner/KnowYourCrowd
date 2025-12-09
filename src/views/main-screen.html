@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Know Your Crowd</title>
+  <link rel="stylesheet" href="/styles/gameshow.css">
+  <link rel="stylesheet" href="/styles/animations.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="main-screen">
+  <!-- API Key Setup Modal -->
+  <div id="api-setup-modal" class="modal hidden">
+    <div class="modal-content gameshow-panel">
+      <h2>🎯 Initial Setup</h2>
+      <p>Enter your Anthropic API key to enable AI-powered themes:</p>
+      <input type="password" id="api-key-input" class="gameshow-input" placeholder="sk-ant-...">
+      <div class="modal-buttons">
+        <button id="save-api-key" class="gameshow-button primary">Save Key</button>
+        <button id="skip-api-setup" class="gameshow-button secondary">Use Fallback Themes</button>
+      </div>
+      <p class="hint">Get your API key at <a href="https://console.anthropic.com" target="_blank">console.anthropic.com</a></p>
+    </div>
+  </div>
+
+  <!-- Settings Modal -->
+  <div id="settings-modal" class="modal hidden">
+    <div class="modal-content gameshow-panel settings-panel">
+      <h2>⚙️ Settings</h2>
+      
+      <div class="settings-section">
+        <h3>🔑 API Key</h3>
+        <div class="input-group">
+          <input type="password" id="settings-api-key" class="gameshow-input" placeholder="sk-ant-...">
+          <button id="update-api-key" class="gameshow-button primary small">Update</button>
+        </div>
+        <p class="hint">Your Anthropic API key for AI-generated themes</p>
+      </div>
+
+      <div class="settings-section">
+        <h3>⏱️ Timer Settings</h3>
+        <div class="settings-row">
+          <label>Theme Selection:</label>
+          <select id="timer-theme" class="gameshow-input">
+            <option value="10">10 seconds</option>
+            <option value="15" selected>15 seconds</option>
+            <option value="20">20 seconds</option>
+            <option value="30">30 seconds</option>
+          </select>
+        </div>
+        <div class="settings-row">
+          <label>Answer Time:</label>
+          <select id="timer-answer" class="gameshow-input">
+            <option value="30">30 seconds</option>
+            <option value="45">45 seconds</option>
+            <option value="60" selected>60 seconds</option>
+            <option value="90">90 seconds</option>
+            <option value="120">2 minutes</option>
+          </select>
+        </div>
+        <div class="settings-row">
+          <label>Matching Time:</label>
+          <select id="timer-matching" class="gameshow-input">
+            <option value="60">60 seconds</option>
+            <option value="90" selected>90 seconds</option>
+            <option value="120">2 minutes</option>
+            <option value="180">3 minutes</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <h3>🎮 Game Options</h3>
+        <div class="settings-row">
+          <label>Rounds per Player:</label>
+          <select id="rounds-per-player" class="gameshow-input">
+            <option value="1">1 round</option>
+            <option value="2">2 rounds</option>
+            <option value="3" selected>3 rounds</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="modal-buttons">
+        <button id="save-settings" class="gameshow-button primary">Save Settings</button>
+        <button id="close-settings" class="gameshow-button secondary">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Container -->
+  <div id="app-container">
+    <!-- Header -->
+    <header class="game-header">
+      <div class="header-left">
+        <span class="round-indicator" id="round-indicator">LOBBY</span>
+      </div>
+      <h1 class="game-title">
+        <span class="star-icon twinkle-star">⭐</span>
+        Know Your Crowd
+        <span class="star-icon twinkle-star">⭐</span>
+      </h1>
+      <div class="header-right">
+        <button id="fullscreen-btn" class="icon-button" title="Toggle Fullscreen">⛶</button>
+        <button id="settings-btn" class="icon-button" title="Settings">⚙</button>
+      </div>
+    </header>
+
+    <!-- Lobby Phase -->
+    <section id="lobby-phase" class="game-phase active">
+      <div class="lobby-container">
+        <div class="qr-section gameshow-panel">
+          <h2>Join the Game</h2>
+          <div class="qr-code-container">
+            <img id="qr-code" alt="QR Code" />
+          </div>
+          <div class="room-code-display">
+            <span class="label">Room Code:</span>
+            <span id="room-code" class="code">------</span>
+          </div>
+          <div class="url-display">
+            <span id="server-url">Waiting for server...</span>
+          </div>
+        </div>
+        
+        <div class="players-section gameshow-panel">
+          <h2>Players (<span id="player-count">0</span>/<span id="max-players">10</span>)</h2>
+          <div id="player-list" class="player-list">
+            <div class="waiting-message">
+              <div class="sparkle-animation"></div>
+              <p>Waiting for players to join...</p>
+            </div>
+          </div>
+          <div class="lobby-controls">
+            <button id="start-game-btn" class="gameshow-button primary large" disabled>
+              Start Game
+            </button>
+            <p id="min-notice" class="min-players-notice">Need at least 3 players to start</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Theme Selection Phase -->
+    <section id="theme-select-phase" class="game-phase">
+      <div class="phase-content">
+        <div class="host-indicator gameshow-panel">
+          <div class="spotlight-spinner"></div>
+          <h2><span id="theme-host-name">Host</span> is selecting a theme...</h2>
+          <div class="timer-display">
+            <div class="timer-gauge">
+              <div id="theme-timer-fill" class="timer-fill"></div>
+            </div>
+            <span id="theme-timer" class="timer-text">15</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Answering Phase -->
+    <section id="answering-phase" class="game-phase">
+      <div class="phase-content">
+        <div class="theme-display gameshow-frame">
+          <h2>Theme</h2>
+          <p id="current-theme" class="theme-text">Loading...</p>
+        </div>
+        
+        <div class="answering-status gameshow-panel">
+          <h3>Players are answering...</h3>
+          <div class="submission-progress">
+            <div id="submission-indicators" class="submission-indicators">
+              <!-- Checkmarks appear here as players submit -->
+            </div>
+            <p><span id="submitted-count">0</span>/<span id="total-to-submit">0</span> submitted</p>
+          </div>
+          <div class="timer-display large">
+            <div class="timer-gauge">
+              <div id="answer-timer-fill" class="timer-fill"></div>
+            </div>
+            <span id="answer-timer" class="timer-text">60</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Matching Phase -->
+    <section id="matching-phase" class="game-phase">
+      <div class="phase-content matching-layout">
+        <div class="matching-header">
+          <h2><span id="matching-host-name">Host</span> is matching answers to players...</h2>
+          <div class="timer-display">
+            <div class="timer-gauge">
+              <div id="matching-timer-fill" class="timer-fill"></div>
+            </div>
+            <span id="matching-timer" class="timer-text">90</span>
+          </div>
+        </div>
+        
+        <div class="matching-content">
+          <div class="answers-column gameshow-panel">
+            <h3>Answers</h3>
+            <div id="answers-list" class="items-list">
+              <!-- Answers appear here -->
+            </div>
+          </div>
+          
+          <div class="players-column gameshow-panel">
+            <h3>Players</h3>
+            <div id="matching-players-list" class="items-list">
+              <!-- Player names appear here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Matches Summary Phase -->
+    <section id="matches-summary-phase" class="game-phase">
+      <div class="phase-content">
+        <div class="matches-summary-container">
+          <h2><span id="summary-host-name">Host</span>'s Matches</h2>
+          <div id="matches-summary-list" class="matches-summary-list">
+            <!-- Matches appear here with colors -->
+          </div>
+          <p class="summary-notice">Revealing results in a moment...</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reveal Phase -->
+    <section id="reveal-phase" class="game-phase">
+      <div class="phase-content">
+        <div class="reveal-container">
+          <h2><span id="reveal-host-name">Host</span>'s Guesses</h2>
+          <div id="reveal-card" class="reveal-card gameshow-frame">
+            <div class="reveal-answer">
+              <span class="label">Answer:</span>
+              <p id="reveal-answer-text" class="answer-text">"..."</p>
+            </div>
+            <div class="reveal-arrow">
+              <div class="arrow-dot"></div>
+              <div class="arrow-dot"></div>
+              <div class="arrow-dot"></div>
+            </div>
+            <div class="reveal-players">
+              <div class="guessed-player">
+                <span class="label">Host guessed:</span>
+                <p id="reveal-guessed" class="player-name">...</p>
+              </div>
+              <div id="reveal-result" class="result-indicator hidden">
+                <span class="result-icon"></span>
+              </div>
+              <div class="actual-player">
+                <span class="label">Actually said by:</span>
+                <p id="reveal-actual" class="player-name">...</p>
+              </div>
+            </div>
+          </div>
+          <div class="reveal-progress">
+            <span id="reveal-progress-text">1 of 5</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Round End Phase -->
+    <section id="round-end-phase" class="game-phase">
+      <div class="phase-content">
+        <div class="round-summary gameshow-panel">
+          <h2>Round <span id="round-end-number">1</span> Complete!</h2>
+          
+          <div class="host-results">
+            <h3><span id="round-host-name">Host</span>'s Results</h3>
+            <div class="score-breakdown">
+              <p>Correct matches: <span id="correct-matches">0</span>/<span id="total-matches">0</span></p>
+              <p class="round-score">Points earned: <span id="host-round-score">+0</span></p>
+              <p id="perfect-bonus" class="bonus hidden">🎯 Perfect Round Bonus: +3</p>
+            </div>
+          </div>
+          
+          <div class="scoreboard gameshow-panel">
+            <div class="scoreboard-header">
+              <h3>Scoreboard</h3>
+              <span id="scoreboard-round-info" class="scoreboard-round-info">Round 1 of 3</span>
+            </div>
+            <div id="scoreboard-list" class="scoreboard-list">
+              <!-- Scores appear here -->
+            </div>
+          </div>
+          
+          <div class="next-round-info">
+            <div class="next-host-spotlight">
+              <span class="crown-icon">👑</span>
+              <h3>Next Host</h3>
+              <p id="next-host-name" class="next-host-name-display">...</p>
+            </div>
+            <div class="timer-display">
+              <span>Next round in: </span>
+              <span id="round-end-timer" class="timer-text">10</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sudden Death Phase -->
+    <section id="sudden-death-phase" class="game-phase">
+      <div class="phase-content">
+        <div class="sudden-death-container">
+          <div class="sudden-death-announcement gameshow-frame">
+            <h1 id="sudden-death-title" class="sudden-death-title">⚡ SUDDEN DEATH! ⚡</h1>
+            <p id="sudden-death-message" class="sudden-death-message">Players tied!</p>
+            <div class="sudden-death-vs">
+              <p id="sudden-death-players" class="tied-players">Loading...</p>
+            </div>
+            <p class="sudden-death-rules">Each player will host one round. Play continues until there's a winner!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Game Over Phase -->
+    <section id="game-over-phase" class="game-phase">
+      <div class="phase-content">
+        <div class="game-over-container">
+          <div class="winner-announcement gameshow-frame">
+            <div class="trophy">🏆</div>
+            <h2>Winner!</h2>
+            <p id="winner-name" class="winner-name">Player Name</p>
+            <p id="winner-score" class="winner-score">Score: 0</p>
+          </div>
+          
+          <div class="final-scoreboard gameshow-panel">
+            <h3>Final Standings</h3>
+            <div id="final-scoreboard" class="scoreboard-list">
+              <!-- Final scores appear here -->
+            </div>
+          </div>
+          
+          <div class="play-again-notice">
+            <p>Host can start a new game from their phone</p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/scripts/ui-controller.js"></script>
+  <script src="/scripts/main-screen.js"></script>
+</body>
+</html>

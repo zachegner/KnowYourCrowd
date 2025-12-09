@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Know Your Crowd - Host</title>
+  <link rel="stylesheet" href="/styles/gameshow.css">
+  <link rel="stylesheet" href="/styles/animations.css">
+  <link rel="stylesheet" href="/styles/phone.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="phone-view host-phone">
+  <div id="app-container">
+    <!-- Header -->
+    <header class="phone-header">
+      <h1>⭐ Know Your Crowd ⭐</h1>
+      <div class="host-badge">HOST</div>
+    </header>
+
+    <!-- Connection Screen -->
+    <section id="connect-screen" class="phone-screen active">
+      <div class="screen-content">
+        <div class="gameshow-panel">
+          <h2>Connect as Host</h2>
+          <form id="host-join-form">
+            <div class="input-group">
+              <label for="room-code">Room Code</label>
+              <input type="text" id="room-code" maxlength="6" placeholder="XXXXXX" autocomplete="off" required>
+            </div>
+            <div class="input-group">
+              <label for="player-name">Your Name</label>
+              <input type="text" id="player-name" maxlength="20" placeholder="Enter name" autocomplete="off" required>
+            </div>
+            <button type="submit" class="gameshow-button primary">Join Game</button>
+          </form>
+          <p id="join-error" class="error-message hidden"></p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lobby Screen -->
+    <section id="lobby-screen" class="phone-screen">
+      <div class="screen-content">
+        <div class="gameshow-panel">
+          <h2>You are hosting Round <span id="hosting-round">1</span></h2>
+          <div class="player-list-container">
+            <h3>Players (<span id="player-count">0</span>)</h3>
+            <ul id="player-list" class="player-list">
+              <!-- Players appear here -->
+            </ul>
+          </div>
+          <button id="start-game-btn" class="gameshow-button primary large" disabled>
+            Start Game
+          </button>
+          <p id="start-notice" class="notice">Need at least 3 players</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Theme Selection Screen -->
+    <section id="theme-select-screen" class="phone-screen">
+      <div class="screen-content">
+        <div class="gameshow-panel">
+          <h2>Select a Theme</h2>
+          <div id="themes-loading" class="loading-indicator">
+            <div class="spotlight-spinner"></div>
+            <p>Generating themes...</p>
+          </div>
+          <div id="themes-container" class="themes-container hidden">
+            <!-- Theme cards appear here -->
+          </div>
+          <div class="timer-display">
+            <span id="theme-timer" class="timer-text">15</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Waiting for Answers Screen -->
+    <section id="waiting-answers-screen" class="phone-screen">
+      <div class="screen-content">
+        <div class="gameshow-panel">
+          <h2>Theme Selected</h2>
+          <div class="selected-theme gameshow-frame">
+            <p id="selected-theme-text">...</p>
+          </div>
+          <div class="waiting-status">
+            <h3>Waiting for answers...</h3>
+            <div class="progress-indicator">
+              <span id="answers-submitted">0</span>/<span id="answers-total">0</span>
+            </div>
+            <ul id="submission-status" class="submission-status">
+              <!-- Player submission status -->
+            </ul>
+          </div>
+          <div class="timer-display">
+            <span id="answer-timer" class="timer-text">60</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Matching Screen - Simple Tap System -->
+    <section id="matching-screen" class="phone-screen">
+      <div class="screen-content">
+        <div class="gameshow-panel matching-panel">
+          <h2>Match Answers to Players</h2>
+          
+          <p class="match-instructions">Tap an answer, then tap the player who said it</p>
+          
+          <div class="match-progress">
+            <span id="matches-count">0</span>/<span id="matches-total">0</span> matched
+          </div>
+          
+          <div class="matching-columns">
+            <div class="column">
+              <h3>Answers</h3>
+              <div id="answers-list" class="items-list">
+                <!-- Answer items appear here -->
+              </div>
+            </div>
+            
+            <div class="column">
+              <h3>Players</h3>
+              <div id="players-list" class="items-list">
+                <!-- Player items appear here -->
+              </div>
+            </div>
+          </div>
+          
+          <div class="matching-actions">
+            <button id="reset-matches" class="gameshow-button secondary">Reset All</button>
+            <button id="submit-matches" class="gameshow-button primary" disabled>Submit Matches</button>
+          </div>
+          
+          <div class="timer-display">
+            <span id="matching-timer" class="timer-text">90</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Results Screen -->
+    <section id="results-screen" class="phone-screen">
+      <div class="screen-content">
+        <div class="gameshow-panel">
+          <h2>Results</h2>
+          <div id="results-container" class="results-container">
+            <div class="your-score">
+              <h3>Your Score This Round</h3>
+              <p class="score-value">+<span id="round-score">0</span></p>
+              <p id="perfect-bonus" class="bonus hidden">🎯 Perfect Round!</p>
+            </div>
+            <div class="scoreboard">
+              <h3>Scoreboard</h3>
+              <ol id="scoreboard-list" class="scoreboard-list">
+                <!-- Scores appear here -->
+              </ol>
+            </div>
+          </div>
+          <div class="next-round-info">
+            <p>Next host: <span id="next-host" class="highlight">...</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Game Over Screen -->
+    <section id="game-over-screen" class="phone-screen">
+      <div class="screen-content">
+        <div class="gameshow-panel">
+          <div class="winner-display">
+            <div class="trophy">🏆</div>
+            <h2>Game Over!</h2>
+            <p class="winner-name"><span id="winner-name">Winner</span></p>
+            <p class="winner-score">Score: <span id="winner-score">0</span></p>
+          </div>
+          <div class="final-scoreboard">
+            <h3>Final Standings</h3>
+            <ol id="final-scoreboard" class="scoreboard-list">
+              <!-- Final scores -->
+            </ol>
+          </div>
+          <button id="play-again-btn" class="gameshow-button primary large">Play Again</button>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/scripts/ui-controller.js"></script>
+  <script src="/scripts/host-phone.js"></script>
+</body>
+</html>

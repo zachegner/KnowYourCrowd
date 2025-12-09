@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 60 60">
+  <defs>
+    <linearGradient id="brassGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37"/>
+      <stop offset="50%" style="stop-color:#B87333"/>
+      <stop offset="100%" style="stop-color:#8B4513"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Gear teeth -->
+  <g fill="url(#brassGrad)" transform="translate(30,30)">
+    <rect x="-4" y="-28" width="8" height="10" rx="1"/>
+    <rect x="-4" y="18" width="8" height="10" rx="1"/>
+    <rect x="-28" y="-4" width="10" height="8" rx="1"/>
+    <rect x="18" y="-4" width="10" height="8" rx="1"/>
+    <rect x="12" y="-24" width="8" height="10" rx="1" transform="rotate(45)"/>
+    <rect x="-20" y="14" width="8" height="10" rx="1" transform="rotate(45)"/>
+    <rect x="14" y="12" width="8" height="10" rx="1" transform="rotate(-45)"/>
+    <rect x="-22" y="-22" width="8" height="10" rx="1" transform="rotate(-45)"/>
+  </g>
+  
+  <!-- Gear body -->
+  <circle cx="30" cy="30" r="20" fill="url(#brassGrad)"/>
+  <circle cx="30" cy="30" r="12" fill="#36454F"/>
+  <circle cx="30" cy="30" r="5" fill="url(#brassGrad)"/>
+</svg>

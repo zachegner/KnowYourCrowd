@@ -1,0 +1,381 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Know Your Crowd - Player</title>
+  <link rel="stylesheet" href="/styles/gameshow.css">
+  <link rel="stylesheet" href="/styles/animations.css">
+  <link rel="stylesheet" href="/styles/phone.css">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Oswald:wght@400;500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="phone-view player-phone">
+  <div id="app-container">
+    <!-- Header -->
+    <header class="phone-header">
+      <h1>⭐ Know Your Crowd ⭐</h1>
+    </header>
+
+    <!-- Join Screen -->
+    <section id="join-screen" class="phone-screen active">
+      <div class="screen-content">
+        <div class="gameshow-panel">
+          <h2>Join Game</h2>
+          <form id="join-form">
+            <div class="input-group" id="room-code-group">
+              <label for="room-code">Room Code</label>
+              <input type="text" id="room-code" maxlength="4" placeholder="XXXX" autocomplete="off" required>
+            </div>
+            <div class="input-group" id="player-name-group">
+              <label for="player-name">Your Name</label>
+              <input type="text" id="player-name" maxlength="20" placeholder="Enter name" autocomplete="off" required>
+            </div>
+            <button type="submit" id="join-btn" class="gameshow-button primary">Join Game</button>
+          </form>
+          <p id="join-error" class="error-message hidden"></p>
+          <div class="connection-status">
+            <span class="connection-dot" id="connection-dot"></span>
+            <span id="connection-text">Connected</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Lobby Screen -->
+    <section id="lobby-screen" class="phone-screen">
+      <div class="screen-content">
+        <div class="gameshow-panel">
+          <h2>Waiting for Game to Start</h2>
+          <div class="your-info">
+            <p>You joined as: <span id="your-name" class="highlight">Player</span></p>
+          </div>
+          <div class="player-list-container">
+            <h3>Players (<span id="player-count">0</span>)</h3>
+            <ul id="player-list" class="player-list">
+              <!-- Players appear here -->
+            </ul>
+          </div>
+          <div class="waiting-indicator">
+            <div class="spotlight-spinner"></div>
+            <p>Waiting for host to start...</p>
+            <div class="tip-rotator">
+              <p id="lobby-tip" class="tip">💡 Think about what makes you unique!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Theme Selection Waiting Screen -->
+    <section id="theme-wait-screen" class="phone-screen">
+      <div class="screen-content">
+        <div class="gameshow-panel">
+          <div class="round-info">
+            <h2>Round <span id="current-round">1</span></h2>
+          </div>
+          <div class="host-indicator">
+            <div class="spotlight-spinner"></div>
+            <p><span id="theme-host-name">Host</span> is selecting a theme...</p>
+          </div>
+          <div class="timer-display">
+            <span id="theme-timer" class="timer-text">15</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Answer Screen -->
+    <section id="answer-screen" class="phone-screen">
+      <div class="screen-content">
+        <div class="gameshow-panel">
+          <h2>Your Answer</h2>
+          <div class="theme-display gameshow-frame theme-pulse">
+            <p id="theme-text">Theme goes here</p>
+          </div>
+          <form id="answer-form">
+            <div class="input-group">
+              <textarea id="answer-input" maxlength="100" placeholder="Your answer..." rows="3" required></textarea>
+              <div class="char-counter"><span id="char-count">0</span>/100</div>
+              <p id="encouragement-text" class="encouragement-text">Think creatively! Be specific and unique.</p>
+            </div>
+            <button type="submit" id="submit-answer-btn" class="gameshow-button primary large">Submit Answer</button>
+          </form>
+          <div class="timer-display large">
+            <span id="answer-timer" class="timer-text">60</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Answer Submitted Screen -->
+    <section id="answer-submitted-screen" class="phone-screen">
+      <div class="screen-content">
+        <div class="gameshow-panel">
+          <div class="submitted-confirmation">
+            <div class="checkmark">✓</div>
+            <h2>Answer Submitted!</h2>
+            <p id="submission-message" class="submission-message">Great answer!</p>
+            <span id="submission-position" class="submission-position">You were #1 to submit!</span>
+            <div class="your-answer">
+              <p>Your answer:</p>
+              <p id="submitted-answer" class="answer-text">"..."</p>
+            </div>
+          </div>
+          <div class="waiting-status">
+            <p>Waiting for other players...</p>
+            <div class="progress-bar">
+              <div id="submission-progress" class="progress-fill" style="width: 0%"></div>
+            </div>
+            <p><span id="submissions-count">0</span>/<span id="submissions-total">0</span></p>
+            <div class="tip-rotator">
+              <p id="waiting-tip" class="tip">🤔 Who do you think will guess your answer?</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="confetti-container" class="confetti-container"></div>
+    </section>
+
+    <!-- Penalty Screen -->
+    <section id="penalty-screen" class="phone-screen">
+      <div class="screen-content">
+        <div class="gameshow-panel error-panel">
+          <div class="penalty-notice">
+            <h2>⚠️ Time's Up!</h2>
+            <p>You didn't submit an answer</p>
+            <p class="penalty-amount">-3 points</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Matching Wait Screen -->
+    <section id="matching-wait-screen" class="phone-screen">
+      <div class="screen-content">
+        <div class="gameshow-panel">
+          <div class="host-indicator">
+            <div class="spotlight-spinner"></div>
+            <h2><span id="matching-host-name">Host</span> is matching answers...</h2>
+          </div>
+          <div class="your-answer-reminder">
+            <p>Your answer was:</p>
+            <p id="your-answer-reminder" class="answer-text">"..."</p>
+          </div>
+          <div class="timer-display">
+            <span id="matching-timer" class="timer-text">90</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Reveal Screen -->
+    <section id="reveal-screen" class="phone-screen">
+      <div class="screen-content">
+        <div class="gameshow-panel">
+          <h2>Revealing Results</h2>
+          <div id="reveal-container" class="reveal-container">
+            <div class="current-reveal">
+              <div class="reveal-answer">
+                <p id="reveal-answer-text" class="answer-text">"..."</p>
+              </div>
+              <div class="reveal-result">
+                <p>Guessed: <span id="reveal-guessed">...</span></p>
+                <p id="reveal-result-icon" class="result-icon"></p>
+                <p>Actual: <span id="reveal-actual">...</span></p>
+              </div>
+            </div>
+          </div>
+          <div class="reveal-progress">
+            <span id="reveal-progress">1/5</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Round End Screen -->
+    <section id="round-end-screen" class="phone-screen">
+      <div class="screen-content">
+        <div class="gameshow-panel">
+          <h2>Round <span id="round-number">1</span> Complete!</h2>
+          <div class="scoreboard">
+            <div class="scoreboard-header">
+              <h3>Scoreboard</h3>
+            </div>
+            <div id="scoreboard-list" class="scoreboard-list">
+              <!-- Scores appear here -->
+            </div>
+          </div>
+          <div class="your-standing">
+            <p>Your rank: <span id="your-rank" class="highlight">#1</span></p>
+            <p>Your score: <span id="your-score" class="highlight">0</span></p>
+          </div>
+          <div class="next-round-info">
+            <p>Next host: <span id="next-host" class="highlight">...</span></p>
+            <div class="timer-display">
+              <span id="round-end-timer" class="timer-text">10</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sudden Death Screen -->
+    <section id="sudden-death-screen" class="phone-screen">
+      <div class="screen-content">
+        <div class="gameshow-panel sudden-death-panel">
+          <h1 class="sudden-death-title">⚡ SUDDEN DEATH! ⚡</h1>
+          <p id="sudden-death-message" class="sudden-death-message">Players tied!</p>
+          <div class="sudden-death-vs">
+            <p id="sudden-death-players" class="tied-players">Loading...</p>
+          </div>
+          <p id="sudden-death-status" class="sudden-death-status">Get ready!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Game Over Screen -->
+    <section id="game-over-screen" class="phone-screen">
+      <div class="screen-content">
+        <div class="gameshow-panel">
+          <div class="winner-display">
+            <div class="trophy">🏆</div>
+            <h2>Game Over!</h2>
+            <p class="winner-name"><span id="winner-name">Winner</span></p>
+            <p class="winner-score">Score: <span id="winner-score">0</span></p>
+          </div>
+          <div class="final-scoreboard">
+            <h3>Final Standings</h3>
+            <ol id="final-scoreboard" class="scoreboard-list">
+              <!-- Final scores -->
+            </ol>
+          </div>
+          <div class="your-final-standing">
+            <p>You finished: <span id="your-final-rank" class="highlight">#1</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Host Turn Screen (when this player becomes host) -->
+    <section id="host-turn-screen" class="phone-screen">
+      <div class="screen-content">
+        <div class="gameshow-panel">
+          <div class="host-badge large">👑 YOUR TURN TO HOST! 👑</div>
+          <p>Tap below to switch to host view</p>
+          <button id="switch-to-host-btn" class="gameshow-button primary large">Go to Host View</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- HOST SCREENS (embedded for when player is host) -->
+    
+    <!-- Theme Selection Screen (Host) -->
+    <section id="host-theme-select-screen" class="phone-screen">
+      <div class="screen-content">
+        <div class="gameshow-panel">
+          <div class="host-badge">👑 HOST</div>
+          <h2>Select a Theme</h2>
+          <div id="themes-loading" class="loading-indicator">
+            <div class="spotlight-spinner"></div>
+            <p>Generating themes...</p>
+          </div>
+          <div id="themes-container" class="themes-container hidden">
+            <!-- Theme cards appear here -->
+          </div>
+          <div class="timer-display">
+            <span id="host-theme-timer" class="timer-text">15</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Waiting for Answers Screen (Host) -->
+    <section id="host-waiting-answers-screen" class="phone-screen">
+      <div class="screen-content">
+        <div class="gameshow-panel">
+          <div class="host-badge">👑 HOST</div>
+          <h2>Theme Selected</h2>
+          <div class="selected-theme gameshow-frame">
+            <p id="host-selected-theme-text">...</p>
+          </div>
+          <div class="waiting-status">
+            <h3>Waiting for answers...</h3>
+            <div class="progress-indicator">
+              <span id="host-answers-submitted">0</span>/<span id="host-answers-total">0</span>
+            </div>
+            <ul id="host-submission-status" class="submission-status">
+              <!-- Player submission status -->
+            </ul>
+          </div>
+          <div class="timer-display">
+            <span id="host-answer-timer" class="timer-text">60</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Matching Screen (Host) - Simple Tap System -->
+    <section id="host-matching-screen" class="phone-screen">
+      <div class="screen-content">
+        <div class="gameshow-panel matching-panel">
+          <div class="host-badge">👑 HOST</div>
+          <h2>Match Answers to Players</h2>
+          
+          <p class="match-instructions">Tap an answer, then tap the player who said it</p>
+          
+          <div class="match-progress">
+            <span id="matches-count">0</span>/<span id="matches-total">0</span> matched
+          </div>
+          
+          <div class="matching-columns">
+            <div class="column">
+              <h3>Answers</h3>
+              <div id="answers-list" class="items-list">
+                <!-- Answer items appear here -->
+              </div>
+            </div>
+            
+            <div class="column">
+              <h3>Players</h3>
+              <div id="players-list" class="items-list">
+                <!-- Player items appear here -->
+              </div>
+            </div>
+          </div>
+          
+          <div class="matching-actions">
+            <button id="reset-matches" class="gameshow-button secondary">Reset All</button>
+            <button id="submit-matches" class="gameshow-button primary" disabled>Submit Matches</button>
+          </div>
+          
+          <div class="timer-display">
+            <span id="host-matching-timer" class="timer-text">90</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Host Results Screen -->
+    <section id="host-results-screen" class="phone-screen">
+      <div class="screen-content">
+        <div class="gameshow-panel">
+          <h2>Your Hosting Results</h2>
+          <div class="your-score">
+            <h3>Your Score This Round</h3>
+            <p class="score-value">+<span id="host-round-score">0</span></p>
+            <p id="perfect-bonus" class="bonus hidden">🎯 Perfect Round!</p>
+          </div>
+          <div class="next-round-info">
+            <p>Next host: <span id="host-next-host" class="highlight">...</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Scripts -->
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/scripts/ui-controller.js"></script>
+  <script src="/scripts/player-phone.js"></script>
+</body>
+</html>

@@ -1,0 +1,1106 @@
+/* Phone-specific styles for Know Your Crowd - Retro Gameshow Theme */
+
+/* ========== Base Phone Styles ========== */
+.phone-view {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  background: var(--stage-dark);
+}
+
+.phone-view #app-container {
+  min-height: 100vh;
+  min-height: -webkit-fill-available;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========== Phone Header ========== */
+.phone-header {
+  padding: 1rem;
+  background: linear-gradient(180deg, var(--stage-navy) 0%, transparent 100%);
+  border-bottom: 3px solid var(--primary-gold);
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 20px rgba(255, 215, 0, 0.2);
+}
+
+.phone-header h1 {
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+.host-badge {
+  display: inline-block;
+  background: linear-gradient(180deg, var(--primary-red) 0%, #B71C1C 100%);
+  color: var(--text-light);
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-family: var(--font-display);
+  font-weight: bold;
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  box-shadow: 0 4px 0 #7f0000, var(--glow-red);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.host-badge.large {
+  font-size: 1.3rem;
+  padding: 0.6rem 2rem;
+  margin: 1rem 0;
+}
+
+/* ========== Phone Screens ========== */
+.phone-screen {
+  display: none;
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.phone-screen.active {
+  display: flex;
+  flex-direction: column;
+}
+
+.screen-content {
+  flex: 1;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.screen-content > .gameshow-panel {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ========== Forms ========== */
+.phone-view .input-group {
+  margin-bottom: 1.5rem;
+}
+
+.phone-view .input-group label {
+  font-size: 1rem;
+  margin-bottom: 0.5rem;
+}
+
+.phone-view .input-group input,
+.phone-view .input-group textarea {
+  font-size: 1.1rem;
+  padding: 1rem;
+}
+
+.phone-view .input-group input::placeholder,
+.phone-view .input-group textarea::placeholder {
+  color: var(--text-muted);
+}
+
+#room-code {
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  text-align: center;
+}
+
+/* ========== Character Counter ========== */
+.char-counter {
+  text-align: right;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 0.25rem;
+}
+
+/* ========== Player List (Phone) ========== */
+.player-list-container {
+  flex: 1;
+  margin: 1rem 0;
+}
+
+.phone-view .player-list {
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.phone-view .player-list li {
+  padding: 0.6rem 0.8rem;
+  font-size: 1rem;
+}
+
+/* ========== Your Info ========== */
+.your-info {
+  text-align: center;
+  padding: 0.75rem;
+  margin-bottom: 1rem;
+  background: rgba(255, 215, 0, 0.15);
+  border: 2px solid var(--primary-gold);
+  border-radius: 8px;
+}
+
+/* ========== Waiting Indicator ========== */
+.waiting-indicator {
+  text-align: center;
+  padding: 1rem;
+  margin-top: auto;
+}
+
+.waiting-indicator p {
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+/* ========== Loading Indicator ========== */
+.loading-indicator {
+  text-align: center;
+  padding: 2rem;
+}
+
+.loading-indicator p {
+  color: var(--text-muted);
+  margin-top: 0.5rem;
+}
+
+/* ========== Theme Cards (Host) ========== */
+.themes-container {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  margin: 1rem 0;
+}
+
+.theme-card {
+  background: linear-gradient(180deg, var(--panel-bg) 0%, var(--panel-light) 100%);
+  border: 3px solid var(--primary-blue);
+  border-radius: 12px;
+  padding: 1.5rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.theme-card:hover {
+  border-color: var(--primary-gold);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-medium), var(--glow-gold);
+}
+
+.theme-card:active {
+  transform: translateY(0);
+}
+
+.theme-card.selected {
+  border-color: var(--primary-gold);
+  background: linear-gradient(180deg, #FFF9C4 0%, #FFE082 100%);
+  box-shadow: 0 0 25px rgba(255, 215, 0, 0.5);
+}
+
+.theme-card p {
+  font-family: var(--font-header);
+  font-size: 1.2rem;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+/* ========== Selected Theme Display ========== */
+.selected-theme {
+  text-align: center;
+  margin: 1rem 0;
+  padding: 1rem;
+}
+
+.selected-theme p {
+  font-family: var(--font-header);
+  font-size: 1.3rem;
+  color: var(--text-dark);
+}
+
+/* ========== Waiting Status ========== */
+.waiting-status {
+  text-align: center;
+  margin-top: 1rem;
+}
+
+.waiting-status h3 {
+  margin-bottom: 1rem;
+}
+
+.progress-indicator {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--primary-gold);
+  margin: 1rem 0;
+  text-shadow: 1px 1px 0 var(--primary-red);
+}
+
+.submission-status {
+  list-style: none;
+  margin-top: 1rem;
+  max-height: 150px;
+  overflow-y: auto;
+}
+
+.submission-status li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  border-bottom: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.submission-status li .status-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.submission-status li .status-icon.pending {
+  background: var(--stage-navy);
+  border: 2px solid var(--primary-gold);
+}
+
+.submission-status li .status-icon.done {
+  background: var(--success);
+  color: white;
+  box-shadow: 0 0 10px var(--success);
+}
+
+/* ========== Simple Tap Matching System ========== */
+.matching-panel {
+  padding: 1rem;
+}
+
+.match-instructions {
+  text-align: center;
+  color: var(--text-muted);
+  margin-bottom: 1rem;
+  font-size: 0.95rem;
+}
+
+.match-progress {
+  text-align: center;
+  font-family: var(--font-display);
+  font-size: 1.3rem;
+  color: var(--primary-gold);
+  margin-bottom: 1rem;
+  text-shadow: 1px 1px 0 var(--primary-red);
+}
+
+/* Two column layout for answers and players */
+.matching-columns {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.75rem;
+  margin: 1rem 0;
+}
+
+.matching-columns .column {
+  background: rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  padding: 0.75rem;
+}
+
+.matching-columns .column h3 {
+  font-size: 0.9rem;
+  text-align: center;
+  margin-bottom: 0.75rem;
+  color: var(--primary-gold);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.items-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+/* Individual tappable items */
+.items-list .item {
+  padding: 14px 12px;
+  border: 3px solid #ccc;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  user-select: none;
+  touch-action: manipulation;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: var(--panel-bg);
+  color: var(--text-dark);
+  word-break: break-word;
+  line-height: 1.3;
+}
+
+.items-list .item.answer {
+  border-color: var(--primary-blue);
+}
+
+.items-list .item.player {
+  border-color: var(--primary-blue);
+  text-align: center;
+  font-weight: 500;
+}
+
+/* Selected state - blue highlight */
+.items-list .item.selected {
+  border-color: #007bff;
+  background: #e7f0ff;
+  transform: scale(1.03);
+  box-shadow: 0 0 15px rgba(0, 123, 255, 0.4);
+}
+
+/* Matched state - locked with background color */
+.items-list .item.matched {
+  border-color: transparent;
+  cursor: default;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Matching Actions */
+.matching-actions {
+  display: flex;
+  gap: 0.75rem;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.matching-actions button {
+  flex: 1;
+  max-width: 150px;
+  font-size: 0.9rem;
+  padding: 0.7rem 0.75rem;
+}
+
+/* ========== Answer Form ========== */
+#answer-form {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+#answer-form textarea {
+  flex: 1;
+  min-height: 100px;
+  resize: none;
+}
+
+/* ========== Submitted Confirmation ========== */
+.submitted-confirmation {
+  text-align: center;
+  padding: 1rem 0;
+}
+
+.submitted-confirmation .checkmark {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  background: var(--success);
+  color: white;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 1rem;
+  animation: scaleIn 0.5s ease;
+}
+
+.your-answer {
+  margin-top: 1.5rem;
+}
+
+.your-answer .answer-text {
+  font-family: var(--font-header);
+  font-size: 1.3rem;
+  color: var(--text-dark);
+  margin-top: 0.5rem;
+}
+
+/* ========== Progress Bar ========== */
+.progress-bar {
+  width: 100%;
+  height: 12px;
+  background: var(--stage-navy);
+  border: 2px solid var(--primary-gold);
+  border-radius: 6px;
+  overflow: hidden;
+  margin: 1rem 0;
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--primary-red) 0%, var(--primary-orange) 50%, var(--primary-gold) 100%);
+  transition: width 0.5s ease;
+  box-shadow: 0 0 10px var(--primary-gold);
+}
+
+/* ========== Penalty Notice ========== */
+.error-panel {
+  border-color: var(--error);
+  box-shadow: var(--glow-red);
+}
+
+.penalty-notice {
+  text-align: center;
+  padding: 2rem 1rem;
+}
+
+.penalty-notice h2 {
+  color: var(--error);
+  margin-bottom: 1rem;
+}
+
+.penalty-amount {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  color: var(--error);
+  font-weight: bold;
+  text-shadow: 2px 2px 0 rgba(0,0,0,0.3);
+}
+
+/* ========== Answer Reminder ========== */
+.your-answer-reminder {
+  text-align: center;
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: rgba(255, 215, 0, 0.1);
+  border: 2px solid var(--primary-gold);
+  border-radius: 8px;
+}
+
+.your-answer-reminder .answer-text {
+  font-family: var(--font-header);
+  font-size: 1.2rem;
+  color: var(--text-dark);
+  margin-top: 0.5rem;
+}
+
+/* ========== Reveal Container ========== */
+.reveal-container {
+  text-align: center;
+}
+
+.current-reveal {
+  padding: 1.5rem;
+  background: linear-gradient(180deg, var(--panel-bg) 0%, var(--panel-light) 100%);
+  border: 3px solid var(--primary-gold);
+  border-radius: 12px;
+  margin: 1rem 0;
+  box-shadow: var(--glow-gold);
+}
+
+.reveal-result {
+  margin-top: 1rem;
+}
+
+.reveal-result p {
+  margin: 0.5rem 0;
+  color: var(--text-dark);
+}
+
+.result-icon {
+  font-size: 2.5rem;
+  margin: 0.5rem 0;
+}
+
+.result-icon.correct::before {
+  content: '✓';
+  color: var(--success);
+  text-shadow: 0 0 15px var(--success);
+}
+
+.result-icon.wrong::before {
+  content: '✗';
+  color: var(--error);
+  text-shadow: 0 0 15px var(--error);
+}
+
+.reveal-progress {
+  color: var(--text-muted);
+  margin-top: 1rem;
+}
+
+/* ========== Results Container ========== */
+.results-container {
+  flex: 1;
+}
+
+.your-score {
+  text-align: center;
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  background: rgba(255, 215, 0, 0.15);
+  border: 2px solid var(--primary-gold);
+  border-radius: 12px;
+}
+
+.your-score .score-value {
+  font-family: var(--font-display);
+  font-size: 3rem;
+  color: var(--primary-gold);
+  margin: 0.5rem 0;
+  text-shadow: 2px 2px 0 var(--primary-red);
+}
+
+/* ========== Scoreboard (Phone) ========== */
+.phone-view .scoreboard {
+  margin: 1rem 0;
+}
+
+.phone-view .scoreboard-list {
+  counter-reset: rank;
+}
+
+.phone-view .scoreboard-list li {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.7rem 1rem;
+  margin-bottom: 0.4rem;
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.1) 0%, transparent 100%);
+  border: 2px solid var(--primary-gold);
+  border-radius: 8px;
+  font-size: 1rem;
+}
+
+.phone-view .scoreboard-list li::before {
+  counter-increment: rank;
+  content: counter(rank) ".";
+  font-family: var(--font-display);
+  font-weight: bold;
+  color: var(--primary-red);
+  margin-right: 0.5rem;
+  min-width: 25px;
+}
+
+.phone-view .scoreboard-list li .score {
+  font-family: var(--font-display);
+  font-weight: bold;
+  color: var(--primary-gold);
+  text-shadow: 1px 1px 0 var(--primary-red);
+}
+
+.phone-view .scoreboard-list li.you {
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.25) 0%, rgba(255, 107, 53, 0.15) 100%);
+  border-color: var(--primary-gold);
+  box-shadow: var(--glow-gold);
+}
+
+/* ========== Your Standing ========== */
+.your-standing {
+  text-align: center;
+  padding: 1rem;
+  margin: 1rem 0;
+  background: rgba(255, 215, 0, 0.1);
+  border: 2px solid var(--primary-gold);
+  border-radius: 8px;
+}
+
+/* ========== Next Round Info ========== */
+.next-round-info {
+  text-align: center;
+  margin-top: auto;
+  padding: 1rem;
+}
+
+/* ========== Game Over (Phone) ========== */
+.sudden-death-panel {
+  background: linear-gradient(180deg, #FF1744 0%, #D50000 100%);
+  border: 4px solid var(--primary-yellow);
+  box-shadow: 0 0 30px rgba(255, 23, 68, 0.8);
+}
+
+.phone-view .sudden-death-title {
+  font-family: var(--font-display);
+  font-size: 2.5rem;
+  color: var(--primary-yellow);
+  margin: 0 0 0.5rem 0;
+  text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.5), 0 0 15px rgba(255, 238, 0, 0.8);
+  letter-spacing: 0.1em;
+}
+
+.phone-view .sudden-death-message {
+  font-size: 1.2rem;
+  color: var(--text-light);
+  margin: 0.5rem 0;
+  font-weight: 700;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.phone-view .sudden-death-vs {
+  margin: 1rem 0;
+  padding: 1rem;
+  background: rgba(0, 0, 0, 0.3);
+  border-radius: 8px;
+}
+
+.phone-view .tied-players {
+  font-family: var(--font-display);
+  font-size: 1.5rem;
+  color: var(--primary-yellow);
+  margin: 0;
+  text-shadow: 1px 1px 0 rgba(0, 0, 0, 0.5);
+  letter-spacing: 0.05em;
+  line-height: 1.4;
+}
+
+.phone-view .sudden-death-status {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  margin: 1rem 0 0 0;
+  font-weight: 600;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.8);
+  padding: 0.75rem;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 6px;
+}
+
+.winner-display {
+  text-align: center;
+  padding: 1.5rem 0;
+}
+
+.phone-view .trophy {
+  font-size: 5rem;
+  filter: drop-shadow(0 0 20px var(--primary-gold));
+}
+
+.phone-view .winner-name {
+  font-family: var(--font-display);
+  font-size: 2rem;
+  color: var(--primary-gold);
+  margin: 0.5rem 0;
+  text-shadow: 2px 2px 0 var(--primary-red);
+}
+
+.phone-view .winner-score {
+  color: var(--text-light);
+  font-weight: 600;
+}
+
+.final-scoreboard {
+  margin: 1rem 0;
+}
+
+.your-final-standing {
+  text-align: center;
+  padding: 1rem;
+  margin-top: 1rem;
+  background: rgba(255, 215, 0, 0.15);
+  border: 2px solid var(--primary-gold);
+  border-radius: 8px;
+}
+
+/* ========== Host Turn Notification ========== */
+#host-turn-screen .screen-content {
+  justify-content: center;
+  align-items: center;
+}
+
+#host-turn-screen .gameshow-panel {
+  text-align: center;
+  max-width: 300px;
+}
+
+/* ========== Timer (Phone) ========== */
+.phone-view .timer-display {
+  justify-content: center;
+  margin-top: auto;
+  padding: 1rem 0;
+}
+
+.phone-view .timer-text {
+  font-size: 2.5rem;
+}
+
+.phone-view .timer-display.large .timer-text {
+  font-size: 4rem;
+}
+
+/* ========== Round Info ========== */
+.round-info {
+  text-align: center;
+  padding: 1rem;
+  background: rgba(255, 215, 0, 0.1);
+  border: 2px solid var(--primary-gold);
+  border-radius: 8px;
+  margin-bottom: 1rem;
+}
+
+/* ========== Host Indicator ========== */
+.host-indicator {
+  text-align: center;
+  padding: 1.5rem;
+}
+
+.host-indicator p {
+  font-size: 1.1rem;
+  color: var(--text-light);
+  margin-top: 1rem;
+}
+
+/* ========== Start Button ========== */
+#start-game-btn {
+  margin-top: auto;
+}
+
+#start-notice {
+  text-align: center;
+}
+
+/* ========== Safe Area for Notch Phones ========== */
+@supports (padding: max(0px)) {
+  .phone-header {
+    padding-top: max(1rem, env(safe-area-inset-top));
+  }
+  
+  .screen-content {
+    padding-bottom: max(1rem, env(safe-area-inset-bottom));
+  }
+}
+
+/* ========== Touch Improvements ========== */
+.phone-view button,
+.phone-view .theme-card,
+.phone-view .items-list .item {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Larger touch targets */
+.phone-view .gameshow-button {
+  min-height: 52px;
+}
+
+.phone-view .gameshow-button.large {
+  min-height: 60px;
+}
+
+/* ========== Landscape Mode ========== */
+@media (orientation: landscape) and (max-height: 500px) {
+  .phone-header h1 {
+    font-size: 1rem;
+  }
+  
+  .phone-view .gameshow-panel {
+    padding: 1rem;
+  }
+  
+  .matching-columns {
+    min-height: 150px;
+  }
+}
+
+/* ========== PLAYER PHONE UX ENHANCEMENTS ========== */
+
+/* === 1. Enhanced Answer Input === */
+.phone-view .theme-display.theme-pulse {
+  animation: themePulse 2s ease-in-out infinite;
+}
+
+.encouragement-text {
+  text-align: center;
+  color: var(--primary-gold);
+  font-size: 0.9rem;
+  font-style: italic;
+  margin-top: 0.5rem;
+  opacity: 0.9;
+}
+
+.phone-view #answer-form .input-group {
+  position: relative;
+}
+
+.phone-view #answer-input:focus {
+  border-color: var(--primary-gold);
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.3);
+}
+
+.phone-view #answer-input.has-content {
+  border-color: var(--success);
+}
+
+/* === 2. Better Waiting States === */
+.waiting-content {
+  position: relative;
+  min-height: 150px;
+}
+
+.tip-rotator {
+  text-align: center;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 1rem 0;
+}
+
+.tip-rotator .tip {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  padding: 0.5rem 1rem;
+  background: rgba(255, 215, 0, 0.1);
+  border-radius: 20px;
+  border: 1px solid rgba(255, 215, 0, 0.2);
+}
+
+.live-counter {
+  text-align: center;
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.live-counter .count {
+  color: var(--primary-gold);
+  font-weight: bold;
+}
+
+/* === 3. Improved Join Flow === */
+.phone-view .input-group {
+  position: relative;
+}
+
+.phone-view .input-group input:focus {
+  border-color: var(--primary-gold);
+  box-shadow: 0 0 0 3px rgba(255, 215, 0, 0.2);
+  outline: none;
+}
+
+.phone-view .input-group.valid input {
+  border-color: var(--success);
+}
+
+.phone-view .input-group.valid::after {
+  content: '✓';
+  position: absolute;
+  right: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--success);
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.phone-view .input-group label {
+  position: relative;
+}
+
+.gameshow-button.loading {
+  pointer-events: none;
+  opacity: 0.8;
+}
+
+.gameshow-button.loading::before {
+  content: '';
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid transparent;
+  border-top-color: currentColor;
+  border-radius: 50%;
+  margin-right: 10px;
+  animation: buttonSpinner 0.8s linear infinite;
+  vertical-align: middle;
+}
+
+@keyframes buttonSpinner {
+  to { transform: rotate(360deg); }
+}
+
+.connection-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 1rem;
+}
+
+.connection-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+}
+
+.connection-dot.disconnected {
+  background: var(--error);
+}
+
+/* === 4. Phone Scoreboard Enhancements === */
+.phone-view .scoreboard-list {
+  counter-reset: none;
+}
+
+.phone-view .scoreboard-list li::before {
+  display: none;
+}
+
+.phone-view .score-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.8rem 1rem;
+  margin-bottom: 0.5rem;
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.08) 0%, transparent 100%);
+  border: 2px solid var(--primary-gold);
+  border-radius: 8px;
+  font-weight: 600;
+  opacity: 0;
+  transform: translateX(-20px);
+  animation: scoreItemEnterPhone 0.4s ease forwards;
+}
+
+@keyframes scoreItemEnterPhone {
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+.phone-view .score-item:nth-child(even) {
+  background: linear-gradient(90deg, rgba(0, 180, 216, 0.08) 0%, transparent 100%);
+}
+
+.phone-view .score-item.first-place {
+  background: linear-gradient(90deg, rgba(255, 215, 0, 0.3) 0%, rgba(255, 107, 53, 0.15) 100%);
+  border-width: 3px;
+  box-shadow: 0 0 15px rgba(255, 215, 0, 0.3);
+}
+
+.phone-view .score-item.second-place {
+  background: linear-gradient(90deg, rgba(192, 192, 192, 0.2) 0%, transparent 100%);
+  border-color: #C0C0C0;
+}
+
+.phone-view .score-item.third-place {
+  background: linear-gradient(90deg, rgba(205, 127, 50, 0.2) 0%, transparent 100%);
+  border-color: #CD7F32;
+}
+
+.phone-view .score-item.you {
+  background: linear-gradient(90deg, rgba(0, 210, 106, 0.2) 0%, rgba(0, 180, 216, 0.1) 100%);
+  border-color: var(--success);
+  box-shadow: 0 0 15px rgba(0, 210, 106, 0.3);
+}
+
+.phone-view .score-item .medal-icon {
+  font-size: 1.3rem;
+  margin-right: 0.4rem;
+}
+
+.phone-view .score-item .rank {
+  min-width: 30px;
+  display: flex;
+  align-items: center;
+}
+
+.phone-view .score-item .name {
+  flex: 1;
+  margin-left: 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.phone-view .score-item .rank-change {
+  font-size: 0.75rem;
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+}
+
+.phone-view .score-item .rank-change.up {
+  color: #00D26A;
+  background: rgba(0, 210, 106, 0.15);
+}
+
+.phone-view .score-item .rank-change.down {
+  color: #FF1744;
+  background: rgba(255, 23, 68, 0.15);
+}
+
+.phone-view .score-item .score-section {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.phone-view .score-item .score {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  color: var(--primary-gold);
+  text-shadow: 1px 1px 0 var(--primary-red);
+}
+
+.phone-view .score-item .score-delta {
+  font-size: 0.8rem;
+  color: var(--success);
+  background: rgba(0, 210, 106, 0.15);
+  padding: 0.15rem 0.4rem;
+  border-radius: 4px;
+}
+
+/* === 5. Answer Submission Celebration === */
+.submitted-confirmation .checkmark {
+  width: 70px;
+  height: 70px;
+  font-size: 2.5rem;
+  animation: checkmarkCelebrate 0.6s ease forwards;
+}
+
+.submission-message {
+  font-size: 1.1rem;
+  color: var(--primary-gold);
+  margin: 0.5rem 0;
+  font-weight: 500;
+}
+
+.submission-position {
+  display: inline-block;
+  background: rgba(0, 210, 106, 0.15);
+  color: var(--success);
+  padding: 0.4rem 1rem;
+  border-radius: 20px;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+  border: 1px solid rgba(0, 210, 106, 0.3);
+}
+
+.confetti-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.confetti {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  opacity: 0;
+}
+
+@keyframes confettiFloat {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.confetti.animate {
+  animation: confettiFloat 2s ease-out forwards;
+}

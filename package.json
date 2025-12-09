@@ -1,0 +1,67 @@
+{
+  "name": "know-your-crowd",
+  "version": "1.0.0",
+  "description": "A classic gameshow-themed party game where players guess who said what",
+  "main": "electron/main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "vite",
+    "build": "vite build",
+    "package": "electron-builder",
+    "package:mac": "electron-builder --mac",
+    "package:win": "electron-builder --win",
+    "package:linux": "electron-builder --linux",
+    "test:game": "node test/automated-game-test.js",
+    "test:sudden-death": "node test/sudden-death-test.js"
+  },
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.1",
+    "vite": "^5.0.0"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.24.0",
+    "better-sqlite3": "^9.2.2",
+    "express": "^4.18.2",
+    "qrcode": "^1.5.3",
+    "socket.io": "^4.7.2",
+    "socket.io-client": "^4.8.1",
+    "uuid": "^9.0.1"
+  },
+  "build": {
+    "appId": "com.knowyourcrowd.app",
+    "productName": "Know Your Crowd",
+    "files": [
+      "electron/**/*",
+      "src/**/*",
+      "services/**/*",
+      "database/**/*",
+      "config/**/*",
+      "node_modules/**/*"
+    ],
+    "directories": {
+      "output": "dist"
+    },
+    "mac": {
+      "category": "public.app-category.games",
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ]
+    }
+  }
+}

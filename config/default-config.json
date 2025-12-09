@@ -1,0 +1,20 @@
+{
+  "apiKey": "",
+  "serverPort": 0,
+  "minPlayers": 3,
+  "maxPlayers": 10,
+  "rotations": 1,
+  "timers": {
+    "themeSelection": 15,
+    "answering": 60,
+    "matching": 90,
+    "reveal": 5,
+    "roundEnd": 10
+  },
+  "penalties": {
+    "noSubmission": -3
+  },
+  "bonuses": {
+    "perfectRound": 3
+  }
+}

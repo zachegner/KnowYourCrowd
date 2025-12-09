@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+  <defs>
+    <linearGradient id="rivetGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#D4AF37"/>
+      <stop offset="30%" style="stop-color:#B87333"/>
+      <stop offset="100%" style="stop-color:#8B4513"/>
+    </linearGradient>
+  </defs>
+  
+  <!-- Rivet -->
+  <circle cx="10" cy="10" r="9" fill="url(#rivetGrad)"/>
+  <circle cx="10" cy="10" r="6" fill="#B87333"/>
+  <circle cx="8" cy="8" r="2" fill="#D4AF37" opacity="0.5"/>
+</svg>
