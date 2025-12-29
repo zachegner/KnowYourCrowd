@@ -1,6 +1,6 @@
 {
   "name": "know-your-crowd",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "A classic gameshow-themed party game where players guess who said what",
   "main": "electron/main.js",
   "scripts": {
