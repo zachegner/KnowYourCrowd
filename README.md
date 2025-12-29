@@ -52,7 +52,7 @@ npm start
 Create a `.env` file in the root directory with your Anthropic API key:
 
 ```bash
-ANTHROPIC_API_KEY=your_api_key_here
+CLAUDE_API_KEY=your_api_key_here
 ```
 
 Get your API key at [console.anthropic.com](https://console.anthropic.com)
@@ -166,7 +166,7 @@ The automated tests simulate Socket.io connections and verify game logic, phase 
 - Some corporate/school networks block device-to-device communication
 
 ### Themes not generating
-- Check that your `ANTHROPIC_API_KEY` environment variable is set correctly
+- Check that your `CLAUDE_API_KEY` environment variable is set correctly in your `.env` file
 - Verify API key is valid at [console.anthropic.com](https://console.anthropic.com)
 - The game will automatically use fallback themes if API is unavailable
 - Check console logs for API error messages

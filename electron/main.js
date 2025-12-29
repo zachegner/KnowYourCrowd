@@ -1,5 +1,9 @@
-const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const path = require('path');
+
+// Load environment variables from .env file
+require('dotenv').config({ path: path.join(__dirname, '..', '.env') });
+
+const { app, BrowserWindow, ipcMain, dialog } = require('electron');
 const { startServer, stopServer, getServerInfo } = require('./server');
 const DatabaseService = require('../services/database');
 const fs = require('fs');
@@ -68,12 +72,12 @@ async function initializeApp() {
   try {
     config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
     // Override with environment variable if set
-    if (process.env.ANTHROPIC_API_KEY) {
-      config.apiKey = process.env.ANTHROPIC_API_KEY;
+    if (process.env.CLAUDE_API_KEY) {
+      config.apiKey = process.env.CLAUDE_API_KEY;
     }
   } catch (err) {
     console.error('Failed to load config:', err);
-    config = { apiKey: process.env.ANTHROPIC_API_KEY || '' };
+    config = { apiKey: process.env.CLAUDE_API_KEY || '' };
   }
 
   // Start the server (pass database instance)
